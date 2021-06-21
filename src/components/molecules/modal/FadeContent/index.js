@@ -2,7 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import Button from "@material-ui/core/Button";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-import { closeCartModal } from "../../../../Redux/Acions";
+import {
+  closeCartModal,
+  deleteProductInCart,
+  increaseProductQuantity,
+} from "../../../../Redux/Acions";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import AddIcon from "@material-ui/icons/Add";
@@ -13,7 +17,12 @@ import styled from "styled-components";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
-  button: {},
+  button: {
+    cursor: `pointer`,
+    "&:hover": {
+      transform: `scale(1.2)`,
+    },
+  },
 });
 
 const Wrapper = styled.div`
@@ -29,10 +38,11 @@ const Wrapper = styled.div`
     height: 80px;
     object-fit: contain;
   }
-  div {
+  .content_wrapper {
     display: flex;
-    justify-content: space-between;
+    flex: 1;
     align-items: center;
+    justify-content: space-evenly;
   }
   /* span {
     margin-right: 1rem;
@@ -43,7 +53,12 @@ const DetailsWrapper = styled.div`
   flex-direction: column;
 `;
 
-const FadeContent = ({ productsInCart, closeCartModal }) => {
+const FadeContent = ({
+  productsInCart,
+  closeCartModal,
+  deleteCartProduct,
+  increaseCartProductQuantity,
+}) => {
   const renderEmptyCart = () => (
     <>
       <h1>Your Cart</h1>
@@ -65,7 +80,7 @@ const FadeContent = ({ productsInCart, closeCartModal }) => {
         <>
           <Wrapper id={id}>
             <img src={image} alt={name} />
-            <div>
+            <div className="content_wrapper">
               <span>{name}</span>
               <ButtonGroup
                 variant="contained"
@@ -76,12 +91,15 @@ const FadeContent = ({ productsInCart, closeCartModal }) => {
                   <RemoveIcon />
                 </Button>
                 <Button disableFocusRipple="false">{inCartQuantity}</Button>
-                <Button>
+                <Button onClick={() => increaseCartProductQuantity(id)}>
                   <AddIcon />
                 </Button>
               </ButtonGroup>
               <span>{price}$</span>
-              <DeleteForeverIcon />
+              <DeleteForeverIcon
+                className={classes.button}
+                onClick={() => deleteCartProduct(id)}
+              />
             </div>
           </Wrapper>
         </>
@@ -97,12 +115,14 @@ const FadeContent = ({ productsInCart, closeCartModal }) => {
     );
     return sum;
   };
-
+  const classes = useStyles();
   return (
     <>
       {productsInCart.length ? renderProductsInCart() : renderEmptyCart()}
       {productsInCart.length ? (
-        <p>Total Price: {calculateTotalPriceInCart(productsInCart)}$</p>
+        <span>
+          Total Price: {calculateTotalPriceInCart(productsInCart).toFixed(2)}$
+        </span>
       ) : null}
     </>
   );
@@ -113,6 +133,8 @@ const mapStateToProps = (state) => ({
 });
 const mapDispatchToProps = (dispatch) => ({
   closeCartModal: () => dispatch(closeCartModal()),
+  deleteCartProduct: (id) => dispatch(deleteProductInCart(id)),
+  increaseCartProductQuantity: (id) => dispatch(increaseProductQuantity(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FadeContent);

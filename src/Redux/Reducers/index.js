@@ -24,6 +24,30 @@ const reducer = (state = initialState, action) => {
         ...state,
         cartProducuts: [...new Set([...state.cartProducuts, payload])],
       };
+
+    case actionTypes.DELETE_PRODUCT_IN_CART:
+      const arrayWithFilteredProducts = state.cartProducuts.filter(
+        (product) => product.id !== payload
+      );
+      return {
+        ...state,
+        cartProducuts: [...new Set([...arrayWithFilteredProducts])],
+      };
+
+    case actionTypes.INCREASE_PRODUCT_QUANTITY:
+      const arrayWithIncreasedProductsQuantity = state.cartProducuts.map(
+        (product) =>
+          product.id === payload
+            ? {
+                ...product,
+                inCartQuantity: product.inCartQuantity + 1,
+              }
+            : product
+      );
+      return {
+        ...state,
+        cartProducuts: [...new Set([...arrayWithIncreasedProductsQuantity])],
+      };
     default:
       return state;
   }
