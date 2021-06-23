@@ -4,6 +4,7 @@ const initialState = {
   products: [...products],
   isCartModalOpen: false,
   cartProducuts: [],
+  cartTotal: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -47,6 +48,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         cartProducuts: [...new Set([...arrayWithIncreasedProductsQuantity])],
+      };
+
+    case actionTypes.CALCULATE_CART_TOTAL:
+      return {
+        ...state,
+        cartTotal: payload,
       };
     default:
       return state;

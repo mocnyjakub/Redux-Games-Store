@@ -21,3 +21,8 @@ export const increaseProductQuantity = (id) => ({
   type: actionTypes.INCREASE_PRODUCT_QUANTITY,
   payload: id,
 });
+
+export const calculateCartTotal = (total) => ({
+  type: actionTypes.CALCULATE_CART_TOTAL,
+  payload: total,
+});

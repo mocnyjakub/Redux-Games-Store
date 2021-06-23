@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import Button from "@material-ui/core/Button";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import {
+  calculateCartTotal,
   closeCartModal,
   deleteProductInCart,
   increaseProductQuantity,
@@ -57,8 +58,24 @@ const FadeContent = ({
   productsInCart,
   closeCartModal,
   deleteCartProduct,
+  cartTotal,
+  calculateCartTotalFn,
   increaseCartProductQuantity,
 }) => {
+  const calculateCartTotal = () => {
+    let tempCartTotal = 0;
+
+    productsInCart.forEach(({ price, inCartQuantity }) => {
+      tempCartTotal += price * inCartQuantity;
+    });
+
+    calculateCartTotalFn(tempCartTotal.toFixed(2));
+  };
+
+  useEffect(() => {
+    calculateCartTotal();
+  }, [productsInCart]);
+
   const renderEmptyCart = () => (
     <>
       <h1>Your Cart</h1>
@@ -120,9 +137,11 @@ const FadeContent = ({
     <>
       {productsInCart.length ? renderProductsInCart() : renderEmptyCart()}
       {productsInCart.length ? (
-        <span>
-          Total Price: {calculateTotalPriceInCart(productsInCart).toFixed(2)}$
-        </span>
+        // <span>
+        //   Total Price: {calculateTotalPriceInCart(productsInCart).toFixed(2)}$
+        // </span>
+
+        <span>Total Price: {cartTotal}$</span>
       ) : null}
     </>
   );
@@ -130,11 +149,13 @@ const FadeContent = ({
 
 const mapStateToProps = (state) => ({
   productsInCart: state.cartProducuts,
+  cartTotal: state.cartTotal,
 });
 const mapDispatchToProps = (dispatch) => ({
   closeCartModal: () => dispatch(closeCartModal()),
   deleteCartProduct: (id) => dispatch(deleteProductInCart(id)),
   increaseCartProductQuantity: (id) => dispatch(increaseProductQuantity(id)),
+  calculateCartTotalFn: (total) => dispatch(calculateCartTotal(total)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FadeContent);

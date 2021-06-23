@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import NavBar from "../components/organisms/NavBar/NavBar";
 import Aside from "../components/organisms/Aside/Aside";
 import Products from "../Views/Products";
-import Home from "../Views/Home";
+import Home from "../Views/Home/Home";
 import Modal from "../components/molecules/modal";
 import { paths } from "../paths";
 import SingleGame from "../Views/SingleGame";
